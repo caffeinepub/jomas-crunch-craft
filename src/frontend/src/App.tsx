@@ -3,6 +3,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Toaster } from "@/components/ui/sonner";
 import { Textarea } from "@/components/ui/textarea";
+
+import {
+  Outlet,
+  RouterProvider,
+  createRootRoute,
+  createRoute,
+  createRouter,
+} from "@tanstack/react-router";
 import {
   AlertCircle,
   CheckCircle2,
@@ -21,7 +29,19 @@ import {
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+// Image imports — ensures the build system bundles all images correctly
+import imgCakeChocolate from "/assets/generated/cake-chocolate.dim_600x600.jpg";
+import imgCakeCupcakes from "/assets/generated/cake-cupcakes.dim_600x600.jpg";
+import imgCakeFruit from "/assets/generated/cake-fruit.dim_600x600.jpg";
+import imgCakePrincess from "/assets/generated/cake-princess.dim_600x600.jpg";
+import imgCakeRedvelvet from "/assets/generated/cake-redvelvet.dim_600x600.jpg";
+import imgCakeVanilla from "/assets/generated/cake-vanilla.dim_600x600.jpg";
+import imgHeroCake from "/assets/generated/hero-cake.dim_1200x600.jpg";
+import imgHomemadeFood from "/assets/generated/homemade-food.dim_600x400.jpg";
+import imgPickles from "/assets/generated/pickles-assorted.dim_600x400.jpg";
 import { useSubmitOrderInquiry } from "./hooks/useQueries";
+import AdminDashboardPage from "./pages/AdminDashboardPage";
+import AdminLoginPage from "./pages/AdminLoginPage";
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
@@ -30,42 +50,42 @@ const cakes = [
     id: 1,
     name: "Chocolate Truffle Cake",
     description: "Rich dark chocolate with gold leaf garnish",
-    image: "/assets/generated/cake-chocolate.dim_600x600.jpg",
+    image: imgCakeChocolate,
     tag: "Best Seller",
   },
   {
     id: 2,
     name: "Red Velvet Cake",
     description: "Classic red velvet with velvety cream cheese frosting",
-    image: "/assets/generated/cake-redvelvet.dim_600x600.jpg",
+    image: imgCakeRedvelvet,
     tag: "Signature",
   },
   {
     id: 3,
     name: "Vanilla Birthday Cake",
     description: "Light and fluffy with colorful sprinkles",
-    image: "/assets/generated/cake-vanilla.dim_600x600.jpg",
+    image: imgCakeVanilla,
     tag: "Popular",
   },
   {
     id: 4,
     name: "Fresh Fruit Cake",
     description: "Loaded with seasonal fresh fruits",
-    image: "/assets/generated/cake-fruit.dim_600x600.jpg",
+    image: imgCakeFruit,
     tag: "Fresh",
   },
   {
     id: 5,
     name: "Princess Dream Cake",
     description: "Elegant fondant design, perfect for special occasions",
-    image: "/assets/generated/cake-princess.dim_600x600.jpg",
+    image: imgCakePrincess,
     tag: "Premium",
   },
   {
     id: 6,
     name: "Cupcake Bouquet",
     description: "Assorted flavors with swirled buttercream",
-    image: "/assets/generated/cake-cupcakes.dim_600x600.jpg",
+    image: imgCakeCupcakes,
     tag: "Gift",
   },
 ];
@@ -75,7 +95,7 @@ const categories = [
     name: "Homemade Food",
     description:
       "Freshly prepared home-style meals made with love, using traditional family recipes passed down through generations.",
-    image: "/assets/generated/homemade-food.dim_600x400.jpg",
+    image: imgHomemadeFood,
     icon: "🍲",
   },
   {
@@ -86,10 +106,10 @@ const categories = [
     icon: "🎂",
   },
   {
-    name: "Homemade Pickles",
+    name: "Kerala Style Pickles",
     description:
-      "Traditional recipes, bold flavors. Our pickles are handcrafted with seasonal produce and authentic spices.",
-    image: "/assets/generated/pickles-assorted.dim_600x400.jpg",
+      "Authentic Kerala-style pickles — fiery, tangy, and deeply aromatic. Made with traditional spices, coconut oil, and age-old recipes from God's Own Country.",
+    image: imgPickles,
     icon: "🫙",
   },
 ];
@@ -254,7 +274,7 @@ function HeroSection() {
       {/* Background image — shows through at top, fades at bottom */}
       <div className="absolute inset-0 z-0">
         <img
-          src="/assets/generated/hero-cake.dim_1200x600.jpg"
+          src={imgHeroCake}
           alt="JOMAS CRUNCH CRAFT hero"
           className="w-full h-full object-cover object-center scale-105"
           style={{ objectPosition: "center 30%" }}
@@ -380,7 +400,7 @@ function HeroSection() {
           className="font-body text-white/45 mb-10 tracking-[0.25em] uppercase"
           style={{ fontSize: "0.68rem" }}
         >
-          Cakes &nbsp;·&nbsp; Homemade Food &nbsp;·&nbsp; Artisan Pickles
+          Cakes &nbsp;·&nbsp; Homemade Food &nbsp;·&nbsp; Kerala Pickles
         </motion.p>
 
         {/* CTAs */}
@@ -741,7 +761,9 @@ function AboutSection() {
                 Beyond cakes, we bring you{" "}
                 <strong className="text-brand-burgundy">homemade meals</strong>{" "}
                 prepared with traditional family recipes, and{" "}
-                <strong className="text-brand-burgundy">artisan pickles</strong>{" "}
+                <strong className="text-brand-burgundy">
+                  Kerala style pickles
+                </strong>{" "}
                 bursting with bold flavors from age-old techniques. No
                 preservatives. No shortcuts. Just pure, honest food.
               </p>
@@ -1096,8 +1118,8 @@ function Footer() {
               </div>
             </div>
             <p className="font-body text-sm text-white/55 leading-relaxed">
-              Premium homemade cakes, fresh food, and artisan pickles made with
-              love and the finest ingredients.
+              Premium homemade cakes, fresh food, and Kerala style pickles made
+              with love and the finest ingredients.
             </p>
           </div>
 
@@ -1211,14 +1233,94 @@ function Footer() {
             </p>
           </div>
         </div>
+
+        {/* Admin link — unobtrusive */}
+        <div className="mt-4 text-center">
+          <a
+            href="/admin"
+            data-ocid="footer.admin_link"
+            className="font-body text-[0.65rem] text-white/20 hover:text-white/40 transition-colors duration-200 tracking-wider"
+          >
+            Admin Panel
+          </a>
+        </div>
       </div>
     </footer>
   );
 }
 
-// ─── App ──────────────────────────────────────────────────────────────────────
+// ─── Floating WhatsApp ────────────────────────────────────────────────────────
 
-export default function App() {
+function FloatingWhatsApp() {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <motion.a
+      href="https://wa.me/919562369930"
+      target="_blank"
+      rel="noopener noreferrer"
+      data-ocid="floating.whatsapp_button"
+      aria-label="Chat on WhatsApp"
+      initial={{ scale: 0, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ delay: 1.5, type: "spring", stiffness: 260, damping: 20 }}
+      onHoverStart={() => setHovered(true)}
+      onHoverEnd={() => setHovered(false)}
+      className="fixed bottom-6 right-6 z-50 flex items-center gap-3 cursor-pointer"
+      style={{ filter: "drop-shadow(0 4px 16px rgba(37,211,102,0.45))" }}
+    >
+      {/* Tooltip label */}
+      <AnimatePresence>
+        {hovered && (
+          <motion.span
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 10 }}
+            transition={{ duration: 0.2 }}
+            className="font-body text-xs font-semibold text-white bg-[#25D366] px-3 py-1.5 rounded-full shadow-md whitespace-nowrap"
+          >
+            Chat with us!
+          </motion.span>
+        )}
+      </AnimatePresence>
+
+      {/* Button circle */}
+      <motion.div
+        animate={{ scale: hovered ? 1.1 : 1 }}
+        transition={{ type: "spring", stiffness: 300, damping: 18 }}
+        className="w-14 h-14 rounded-full flex items-center justify-center relative"
+        style={{ background: "#25D366" }}
+      >
+        {/* Pulse ring */}
+        <motion.span
+          className="absolute inset-0 rounded-full"
+          style={{ background: "#25D366" }}
+          animate={{ scale: [1, 1.5], opacity: [0.5, 0] }}
+          transition={{
+            duration: 1.8,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: "easeOut",
+          }}
+        />
+        {/* WhatsApp SVG icon */}
+        <svg
+          viewBox="0 0 32 32"
+          width="28"
+          height="28"
+          fill="white"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <path d="M16 2C8.268 2 2 8.268 2 16c0 2.494.653 4.837 1.793 6.872L2 30l7.328-1.766A13.94 13.94 0 0016 30c7.732 0 14-6.268 14-14S23.732 2 16 2zm0 25.5a11.46 11.46 0 01-5.858-1.607l-.42-.248-4.347 1.048 1.075-4.233-.273-.436A11.47 11.47 0 014.5 16C4.5 9.596 9.596 4.5 16 4.5S27.5 9.596 27.5 16 22.404 27.5 16 27.5zm6.29-8.617c-.345-.172-2.04-1.006-2.356-1.12-.317-.115-.547-.172-.778.172-.23.345-.893 1.12-1.094 1.35-.2.23-.402.258-.747.086-.345-.172-1.456-.537-2.773-1.71-1.025-.913-1.717-2.04-1.918-2.384-.2-.345-.022-.53.151-.702.155-.155.345-.403.518-.604.172-.2.23-.345.345-.575.115-.23.057-.432-.029-.604-.086-.172-.778-1.877-1.066-2.57-.28-.675-.565-.583-.778-.594l-.662-.011c-.23 0-.604.086-.92.432-.317.345-1.208 1.18-1.208 2.878s1.237 3.338 1.41 3.568c.172.23 2.435 3.717 5.9 5.21.824.356 1.468.569 1.969.728.827.263 1.58.226 2.174.137.663-.099 2.04-.834 2.328-1.638.287-.804.287-1.493.2-1.638-.086-.144-.317-.23-.662-.402z" />
+        </svg>
+      </motion.div>
+    </motion.a>
+  );
+}
+
+// ─── Home Page ───────────────────────────────────────────────────────────────
+
+function HomePage() {
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       <Toaster position="top-center" richColors />
@@ -1231,6 +1333,67 @@ export default function App() {
         <OrderSection />
       </main>
       <Footer />
+      <FloatingWhatsApp />
     </div>
   );
+}
+
+// ─── Router Setup ─────────────────────────────────────────────────────────────
+
+const rootRoute = createRootRoute({
+  component: () => <Outlet />,
+});
+
+const homeRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/",
+  component: HomePage,
+});
+
+const adminRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/admin",
+  component: AdminLoginPage,
+});
+
+const adminDashboardRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/admin/dashboard",
+  component: AdminDashboardPage,
+});
+
+const routeTree = rootRoute.addChildren([
+  homeRoute,
+  adminRoute,
+  adminDashboardRoute,
+]);
+
+const router = createRouter({ routeTree });
+
+declare module "@tanstack/react-router" {
+  interface Register {
+    router: typeof router;
+  }
+}
+
+// Augment the auto-generated backendInterface to include authorization
+// component methods (_initializeAccessControlWithSecret) that are present
+// at runtime but not yet reflected in the generated backend.d.ts.
+declare module "./backend" {
+  interface backendInterface {
+    _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
+    getCallerUserRole(): Promise<{ __kind__: string }>;
+    isCallerAdmin(): Promise<boolean>;
+  }
+  interface Backend {
+    _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
+    getCallerUserRole(): Promise<{ __kind__: string }>;
+    isCallerAdmin(): Promise<boolean>;
+  }
+}
+
+// ─── App ──────────────────────────────────────────────────────────────────────
+
+export default function App() {
+  return <RouterProvider router={router} />;
 }
