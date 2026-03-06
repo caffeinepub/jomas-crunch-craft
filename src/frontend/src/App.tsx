@@ -29,16 +29,16 @@ import {
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-// Image imports — ensures the build system bundles all images correctly
-import imgCakeChocolate from "/assets/generated/cake-chocolate.dim_600x600.jpg";
-import imgCakeCupcakes from "/assets/generated/cake-cupcakes.dim_600x600.jpg";
-import imgCakeFruit from "/assets/generated/cake-fruit.dim_600x600.jpg";
-import imgCakePrincess from "/assets/generated/cake-princess.dim_600x600.jpg";
-import imgCakeRedvelvet from "/assets/generated/cake-redvelvet.dim_600x600.jpg";
-import imgCakeVanilla from "/assets/generated/cake-vanilla.dim_600x600.jpg";
-import imgHeroCake from "/assets/generated/hero-cake.dim_1200x600.jpg";
-import imgHomemadeFood from "/assets/generated/homemade-food.dim_600x400.jpg";
-import imgPickles from "/assets/generated/pickles-assorted.dim_600x400.jpg";
+// Image paths — served from public/assets/generated/
+const imgCakeChocolate = "/assets/generated/cake-chocolate.dim_600x600.jpg";
+const imgCakeCupcakes = "/assets/generated/cake-cupcakes.dim_600x600.jpg";
+const imgCakeFruit = "/assets/generated/cake-fruit.dim_600x600.jpg";
+const imgCakePrincess = "/assets/generated/cake-princess.dim_600x600.jpg";
+const imgCakeRedvelvet = "/assets/generated/cake-redvelvet.dim_600x600.jpg";
+const imgCakeVanilla = "/assets/generated/cake-vanilla.dim_600x600.jpg";
+const imgHeroCake = "/assets/generated/hero-cake.dim_1200x600.jpg";
+const imgHomemadeFood = "/assets/generated/homemade-food.dim_600x400.jpg";
+const imgPickles = "/assets/generated/pickles-assorted.dim_600x400.jpg";
 import { useSubmitOrderInquiry } from "./hooks/useQueries";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
